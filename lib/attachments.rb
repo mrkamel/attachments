@@ -5,14 +5,7 @@ require "attachments/interpolation"
 module Attachments
   class UnknownAttachment < StandardError; end
   class NoSuchVersion < StandardError; end
-
-  def self.driver=(driver)
-    @driver = driver
-  end
-
-  def self.driver
-    @driver
-  end
+  class InterpolationError < StandardError; end
 
   def self.default_options
     @default_options ||= { :protocol => "http" }
@@ -29,37 +22,37 @@ module Attachments
       end
 
       def url
-        url_prefix = option(:url_prefix) ? option(:url_prefix).gsub(/$/, "/") : ""
+        url_prefix = option(:url_prefix) ? interpolate(option(:url_prefix).gsub(/\/*$/, "/")) : ""
 
-        "#{option :protocol}://#{option :host}/#{url_prefix}#{path}"
+        "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{url_prefix}#{path}"
       end
 
       def path
-        option :path
+        interpolate option(:path)
       end
 
       def container
-        option :container
+        interpolate option(:container)
       end
 
       def temp_url(opts = {})
-        driver.temp_url path, container, opts
+        option(:driver).temp_url path, container, opts
       end
 
       def value
-        driver.value path, container
+        option(:driver).value path, container
       end
 
       def store(io_or_data, opts = {})
-        driver.store path, io_or_data, container, opts
+        option(:driver).store path, io_or_data, container, opts
       end
 
       def delete
-        driver.delete path, container
+        option(:driver).delete path, container
       end
 
       def exists?
-        driver.exists? path, container
+        option(:driver).exists? path, container
       end
 
       def inspect
@@ -72,22 +65,18 @@ module Attachments
 
       private
 
-      def driver
-        Attachments.driver
-      end
-
       def option(option_name)
-        return evaluate(attachment.options[:versions][name][option_name]) if attachment.options[:versions][name].key?(option_name)
-        return evaluate(options[option_name]) if options.key?(option_name)
-        return evaluate(attachment.options[option_name]) if attachment.options.key?(option_name)
+        return attachment.options[:versions][name][option_name] if attachment.options[:versions][name].key?(option_name)
+        return options[option_name] if options.key?(option_name)
+        return attachment.options[option_name] if attachment.options.key?(option_name)
 
-        evaluate Attachments.default_options[option_name]
+        Attachments.default_options[option_name]
       end
 
-      def evaluate(option)
-        return option unless option.is_a?(String)
+      def interpolate(str)
+        raise(InterpolationError) unless str.is_a?(String)
 
-        option.gsub(/:[a-zA-Z0-9_]+/) do |name|
+        str.gsub(/:[a-zA-Z0-9_]+/) do |name|
           Interpolation.new(self).send(name.gsub(/^:/, ""))
         end
       end

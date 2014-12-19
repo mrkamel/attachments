@@ -36,7 +36,7 @@ module Attachments
     end 
 
     def temp_url(name, container, options = {})
-      raise NotImplementedError
+      swift_client.temp_url name, container, options
     end
   end
 end
