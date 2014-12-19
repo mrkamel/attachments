@@ -1,4 +1,7 @@
 
+require "attachments/version"
+require "attachments/interpolation"
+
 module Attachments
   class UnknownAttachment < StandardError; end
   class NoSuchVersion < StandardError; end
