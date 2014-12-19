@@ -22,9 +22,11 @@ module Attachments
       end
 
       def url
-        url_prefix = option(:url_prefix) ? interpolate(option(:url_prefix).gsub(/\/*$/, "/")) : ""
-
-        "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{url_prefix}#{path}"
+        if option(:url_prefix)
+          "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{interpolate option(:url_prefix)}/#{path}"
+        else
+          "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{path}"
+        end
       end
 
       def path

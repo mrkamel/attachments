@@ -1,6 +1,4 @@
 
-require "swift_client"
-
 module Attachments
   class SwiftDriver
     attr_accessor :swift_client
