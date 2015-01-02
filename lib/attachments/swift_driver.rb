@@ -7,8 +7,8 @@ module Attachments
       self.swift_client = swift_client
     end
 
-    def store(name, data, container, headers = {})
-      swift_client.put_object name, data, container, headers
+    def store(name, data_or_io, container, headers = {})
+      swift_client.put_object name, data_or_io, container, headers
     end 
 
     def value(name, container)

@@ -3,8 +3,8 @@ module Attachments
   class FakeDriver
     class ItemNotFound < StandardError; end
 
-    def store(name, data, container, options = {}) 
-      objects(container)[name] = data.respond_to?(:read) ? data.read : data
+    def store(name, data_or_io, container, options = {})
+      objects(container)[name] = data_or_io.respond_to?(:read) ? data_or_io.read : data_or_io
     end 
 
     def exists?(name, container)

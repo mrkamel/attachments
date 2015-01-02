@@ -34,27 +34,29 @@ module Attachments
       end
 
       def container
-        interpolate option(:container)
+        interpolate option(:container) || option(:bucket)
       end
 
+      alias_method :bucket, :container
+
       def temp_url(opts = {})
-        option(:driver).temp_url path, container, opts
+        option(:driver).temp_url(path, container, opts)
       end
 
       def value
-        option(:driver).value path, container
+        option(:driver).value(path, container)
       end
 
-      def store(io_or_data, opts = {})
-        option(:driver).store path, io_or_data, container, opts
+      def store(data_or_io, opts = {})
+        option(:driver).store(path, data_or_io, container, opts)
       end
 
       def delete
-        option(:driver).delete path, container
+        option(:driver).delete(path, container)
       end
 
       def exists?
-        option(:driver).exists? path, container
+        option(:driver).exists?(path, container)
       end
 
       def inspect
