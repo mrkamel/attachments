@@ -11,6 +11,8 @@ module Attachments
       version.container
     end
 
+    alias_method :bucket, :container
+
     def method_missing(name, *args, &block)
       version.object.send name
     end
