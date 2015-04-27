@@ -1,40 +1,24 @@
 
 module Attachments
   class S3Driver
-    attr_accessor :s3
-
-    def initialize(s3)
-      self.s3 = s3
-    end
-
     def store(name, data_or_io, bucket, options = {})
-      warn "[WARN] option :access is deprecated in favor of :acl" if options.key?(:access)
-
-      opts = options.dup
-      opts[:acl] = opts.delete(:access) if opts.key?(:access)
-
-      s3.buckets[bucket].objects[name].write(data_or_io, opts)
+      AWS::S3::S3Object.store name, data_or_io, bucket, options
     end 
 
     def value(name, bucket)
-      s3.buckets[bucket].objects[name].read
+      AWS::S3::S3Object.value name, bucket
     end 
 
     def delete(name, bucket)
-      s3.buckets[bucket].objects[name].delete
+      AWS::S3::S3Object.delete name, bucket
     end 
 
     def exists?(name, bucket)
-      s3.buckets[bucket].objects[name].exists?
+      AWS::S3::S3Object.exists? name, bucket
     end 
 
     def temp_url(name, bucket, options = {})
-      opts = options.dup
-      opts[:expires] = opts.delete(:expires_in).to_i if opts.key?(:expires_in)
-
-      method = opts.delete(:method) || :get
-
-      s3.buckets[bucket].objects[name].url_for(method, opts)
+      AWS::S3::S3Object.url_for name, bucket, options
     end
   end
 end
