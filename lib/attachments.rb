@@ -125,6 +125,8 @@ module Attachments
 
   module ClassMethods
     def attachment(name, options = {})
+      return if attachments[name]
+
       self.attachments = attachments.merge(name => options)
 
       define_method name do |version = nil, options = {}|
