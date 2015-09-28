@@ -134,6 +134,8 @@ module Attachments
       end
 
       define_method "#{name}=" do |value|
+        self.updated_at = Time.zone.now if respond_to?(:updated_at=)
+
         instance_variable_set "@#{name}", value
       end
     end
