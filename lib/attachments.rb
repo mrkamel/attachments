@@ -22,7 +22,7 @@ module Attachments
       end
 
       def url
-        "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{interpolate(option(:url_prefix)).to_s + "/" if option(:url_prefix)}#{path}#{interpolate(option(:url_suffix)) if option(:url_suffix)}"
+        "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{interpolate(option(:url_prefix)).to_s + "/" if option(:url_prefix) && interpolate(option(:url_prefix))}#{path}#{interpolate(option(:url_suffix)) if option(:url_suffix) && interpolate(option(:url_suffix))}"
       end
 
       def path
