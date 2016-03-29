@@ -23,9 +23,9 @@ module Attachments
 
       def url
         if option(:url_prefix)
-          "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{interpolate option(:url_prefix)}/#{path}"
+          "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{interpolate option(:url_prefix)}/#{path}#{option(:url_suffix) if option(:url_suffix)}"
         else
-          "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{path}"
+          "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{path}#{option(:url_suffix) if option(:url_suffix)}"
         end
       end
 
