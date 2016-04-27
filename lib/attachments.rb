@@ -63,8 +63,6 @@ module Attachments
         attachment.object
       end
 
-      private
-
       def option(option_name)
         return attachment.options[:versions][name][option_name] if attachment.options[:versions][name][option_name]
         return options[option_name] if options[option_name]
@@ -72,6 +70,8 @@ module Attachments
 
         Attachments.default_options[option_name]
       end
+
+      private
 
       def interpolate(str)
         raise(InterpolationError) unless str.is_a?(String)
