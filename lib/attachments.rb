@@ -63,6 +63,18 @@ module Attachments
         attachment.object
       end
 
+      def method_missing(method_name, *args, &block)
+        return attachment.options[:versions][name][method_name.to_sym] if attachment.options[:versions][name].key?(method_name.to_sym)
+
+        super
+      end
+
+      def respond_to_missing?(method_name, *args)
+        attachment.options[:versions][name].key?(method_name.to_sym)
+      end
+
+      private
+
       def option(option_name)
         return attachment.options[:versions][name][option_name] if attachment.options[:versions][name][option_name]
         return options[option_name] if options[option_name]
@@ -70,8 +82,6 @@ module Attachments
 
         Attachments.default_options[option_name]
       end
-
-      private
 
       def interpolate(str)
         raise(InterpolationError) unless str.is_a?(String)
@@ -97,6 +107,16 @@ module Attachments
 
     def versions
       options[:versions].collect { |name, _| version name }
+    end
+
+    def method_missing(name, *args, &block)
+      return options[name.to_sym] if options.key?(name.to_sym)
+
+      super
+    end
+
+    def respond_to_missing?(name, *args)
+      options.key?(name.to_sym)
     end
 
     def inspect
