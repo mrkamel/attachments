@@ -86,37 +86,38 @@ module Attachments
       def interpolate(str)
         raise(InterpolationError) unless str.is_a?(String)
 
-        str.gsub(/:[a-zA-Z0-9_]+/) do |name|
-          Interpolation.new(self).send(name.gsub(/^:/, ""))
+        str.gsub(/:[a-zA-Z0-9_]+/) do |attribute_name|
+          Interpolation.new(self).send(attribute_name.gsub(/^:/, ""))
         end
       end
     end
 
-    attr_accessor :object, :options
+    attr_accessor :object, :name, :options
 
-    def initialize(object, options)
+    def initialize(object, name, options)
       self.object = object
+      self.name = name
       self.options = options
     end
 
-    def version(name, opts = {})
-      raise(NoSuchVersion, "No such version: #{name}") unless options[:versions][name]
+    def version(version_name, opts = {})
+      raise(NoSuchVersion, "No such version: #{version_name}") unless options[:versions][version_name]
 
-      Version.new self, name, opts
+      Version.new self, version_name, opts
     end
 
     def versions
-      options[:versions].collect { |name, _| version name }
+      options[:versions].collect { |version_name, _| version version_name }
     end
 
-    def method_missing(name, *args, &block)
-      return options[name.to_sym] if options.key?(name.to_sym)
+    def method_missing(method_name, *args, &block)
+      return options[method_name.to_sym] if options.key?(method_name.to_sym)
 
       super
     end
 
-    def respond_to_missing?(name, *args)
-      options.key?(name.to_sym)
+    def respond_to_missing?(method_name, *args)
+      options.key?(method_name.to_sym)
     end
 
     def inspect
@@ -136,7 +137,7 @@ module Attachments
 
     raise(UnknownAttachment) unless definition
 
-    Attachment.new self, definition
+    Attachment.new self, name, definition
   end
 
   module ClassMethods
