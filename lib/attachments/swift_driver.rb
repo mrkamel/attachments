@@ -1,5 +1,6 @@
 
 require "swift_client"
+require "connection_pool"
 
 module Attachments
   class SwiftDriver
