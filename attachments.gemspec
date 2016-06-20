@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "swift_client"
   spec.add_dependency "aws-sdk"
   spec.add_dependency "mime-types"
+  spec.add_dependency "connection_pool"
 end
