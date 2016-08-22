@@ -76,9 +76,9 @@ module Attachments
       private
 
       def option(option_name)
-        return attachment.options[:versions][name][option_name] if attachment.options[:versions][name][option_name]
-        return options[option_name] if options[option_name]
-        return attachment.options[option_name] if attachment.options[option_name]
+        return attachment.options[:versions][name][option_name] if attachment.options[:versions][name].key?(option_name)
+        return options[option_name] if options.key?(option_name)
+        return attachment.options[option_name] if attachment.options.key?(option_name)
 
         Attachments.default_options[option_name]
       end
