@@ -81,8 +81,6 @@ module Attachments
         Attachments.default_options[option_name]
       end
 
-      private
-
       def interpolate(str)
         raise(InterpolationError) unless str.is_a?(String)
 
