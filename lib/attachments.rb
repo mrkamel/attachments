@@ -26,7 +26,7 @@ module Attachments
       end
 
       def path
-        interpolate option(:path)
+        "#{interpolate(option(:path_prefix)) + "/" if option(:path_prefix)}#{interpolate(option(:path))}"
       end
 
       def container
@@ -72,6 +72,8 @@ module Attachments
       def respond_to_missing?(method_name, *args)
         attachment.options[:versions][name].key?(method_name.to_sym)
       end
+
+      private
 
       def option(option_name)
         return attachment.options[:versions][name][option_name] if attachment.options[:versions][name].key?(option_name)
