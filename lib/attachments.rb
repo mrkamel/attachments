@@ -25,11 +25,11 @@ module Attachments
         "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{interpolate(option(:url_prefix)).to_s + "/" if option(:url_prefix)}#{path}#{interpolate(option(:url_suffix)) if option(:url_suffix)}"
       end
 
-      def full_path
-        "#{interpolate(option(:path_prefix)) + "/" if option(:path_prefix)}#{path}"
+      def path
+        "#{interpolate(option(:path_prefix)) + "/" if option(:path_prefix)}#{path_without_prefix}"
       end
 
-      def path
+      def path_without_prefix
         interpolate option(:path)
       end
 
@@ -40,23 +40,23 @@ module Attachments
       alias_method :bucket, :container
 
       def temp_url(opts = {})
-        option(:driver).temp_url(full_path, container, opts)
+        option(:driver).temp_url(path, container, opts)
       end
 
       def value
-        option(:driver).value(full_path, container)
+        option(:driver).value(path, container)
       end
 
       def store(data_or_io, opts = {})
-        option(:driver).store(full_path, data_or_io, container, opts)
+        option(:driver).store(path, data_or_io, container, opts)
       end
 
       def delete
-        option(:driver).delete(full_path, container)
+        option(:driver).delete(path, container)
       end
 
       def exists?
-        option(:driver).exists?(full_path, container)
+        option(:driver).exists?(path, container)
       end
 
       def inspect
