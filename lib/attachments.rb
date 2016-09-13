@@ -25,8 +25,12 @@ module Attachments
         "#{interpolate option(:protocol)}://#{interpolate option(:host)}/#{interpolate(option(:url_prefix)).to_s + "/" if option(:url_prefix)}#{path}#{interpolate(option(:url_suffix)) if option(:url_suffix)}"
       end
 
+      def full_path
+        "#{interpolate(option(:path_prefix)) + "/" if option(:path_prefix)}#{path}"
+      end
+
       def path
-        "#{interpolate(option(:path_prefix)) + "/" if option(:path_prefix)}#{interpolate(option(:path))}"
+        interpolate option(:path)
       end
 
       def container
