@@ -73,8 +73,6 @@ module Attachments
         attachment.options[:versions][name].key?(method_name.to_sym)
       end
 
-      private
-
       def option(option_name)
         return attachment.options[:versions][name][option_name] if attachment.options[:versions][name].key?(option_name)
         return options[option_name] if options.key?(option_name)
@@ -82,6 +80,8 @@ module Attachments
 
         Attachments.default_options[option_name]
       end
+
+      private
 
       def interpolate(str)
         raise(InterpolationError) unless str.is_a?(String)
