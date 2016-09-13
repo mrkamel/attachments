@@ -40,23 +40,23 @@ module Attachments
       alias_method :bucket, :container
 
       def temp_url(opts = {})
-        option(:driver).temp_url(path, container, opts)
+        option(:driver).temp_url(full_path, container, opts)
       end
 
       def value
-        option(:driver).value(path, container)
+        option(:driver).value(full_path, container)
       end
 
       def store(data_or_io, opts = {})
-        option(:driver).store(path, data_or_io, container, opts)
+        option(:driver).store(full_path, data_or_io, container, opts)
       end
 
       def delete
-        option(:driver).delete(path, container)
+        option(:driver).delete(full_path, container)
       end
 
       def exists?
-        option(:driver).exists?(path, container)
+        option(:driver).exists?(full_path, container)
       end
 
       def inspect
