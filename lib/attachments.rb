@@ -51,6 +51,10 @@ module Attachments
         option(:driver).store(path, data_or_io, container, opts)
       end
 
+      def store_multipart(opts = {}, &block)
+        option(:driver).stream(path, container, opts, &block)
+      end
+
       def delete
         option(:driver).delete(path, container)
       end
