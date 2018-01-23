@@ -15,17 +15,17 @@ module Attachments
 
       @index = 0
 
-      upload_id = s3_client.create_multipart_upload(options.merge(bucket: bucket, key: name)).to_h["upload_id"]
+      @upload_id = @s3_client.create_multipart_upload(options.merge(bucket: bucket, key: name)).to_h[:upload_id]
 
       begin
         block.call(self)
       rescue => e
-        s3_client.abort_multipart_upload(bucket: bucket, key: name, upload_id: upload_id)
+        @s3_client.abort_multipart_upload(bucket: @bucket, key: @name, upload_id: @upload_id)
 
         raise e
       end
 
-      s3_client.complete_multipart_upload(bucket: bucket, key: name, upload_id: upload_id)
+      @s3_client.complete_multipart_upload(bucket: @bucket, key: @name, upload_id: @upload_id)
     end
 
     def upload_part(data_or_io)
