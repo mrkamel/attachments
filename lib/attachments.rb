@@ -52,7 +52,7 @@ module Attachments
       end
 
       def store_multipart(opts = {}, &block)
-        option(:driver).stream(path, container, opts, &block)
+        option(:driver).store_multipart(path, container, opts, &block)
       end
 
       def delete
