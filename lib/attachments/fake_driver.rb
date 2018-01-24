@@ -7,12 +7,11 @@ module Attachments
       @name = name
       @container = container
 
-      @data = ""
-
       block.call(self)
     end
 
     def upload_part(data)
+      @data ||= ""
       @data << data
     end
 
