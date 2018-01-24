@@ -29,7 +29,7 @@ module Attachments
     end 
 
     def store_multipart(name, container, options = {})
-      objects(container)[name] = FakeMultipartUpload.new(name, bucket, options, &block).data
+      objects(container)[name] = FakeMultipartUpload.new(name, container, options, &block).data
     end
 
     def exists?(name, container)
