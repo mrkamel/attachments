@@ -13,7 +13,7 @@ module Attachments
       @bucket = bucket
       @name = name
 
-      @index = 0
+      @parts = []
 
       @upload_id = @s3_client.create_multipart_upload(options.merge(bucket: bucket, key: name)).to_h[:upload_id]
 
@@ -25,13 +25,19 @@ module Attachments
         raise e
       end
 
-      @s3_client.complete_multipart_upload(bucket: @bucket, key: @name, upload_id: @upload_id)
+      @s3_client.complete_multipart_upload(bucket: @bucket, key: @name, upload_id: @upload_id, multipart_upload: { parts: @parts })
     end
 
-    def upload_part(data_or_io)
-      index = synchronize { @index += 1 }
+    def upload_part(data)
+      index = synchronize do
+        part_number = @parts.size + 1
 
-      @s3_client.upload_part(body: data_or_io, bucket: @bucket, key: @name, upload_id: @upload_id, part_number: index)
+        @parts << { part_number: part_number, etag: "\"#{Digest::MD5.hexdigest(data)}\"" }
+
+        part_number
+      end
+
+      @s3_client.upload_part(body: data, bucket: @bucket, key: @name, upload_id: @upload_id, part_number: index)
     end
   end
 
@@ -54,7 +60,7 @@ module Attachments
       opts[:body] = data_or_io
 
       s3_resource.bucket(bucket).object(name).put(opts)
-    end 
+    end
 
     def store_multipart(name, bucket, options = {}, &block)
       opts = options.dup
@@ -69,15 +75,15 @@ module Attachments
 
     def value(name, bucket)
       s3_resource.bucket(bucket).object(name).get.body.read.force_encoding(Encoding::BINARY)
-    end 
+    end
 
     def delete(name, bucket)
       s3_resource.bucket(bucket).object(name).delete
-    end 
+    end
 
     def exists?(name, bucket)
       s3_resource.bucket(bucket).object(name).exists?
-    end 
+    end
 
     def temp_url(name, bucket, options = {})
       opts = options.dup

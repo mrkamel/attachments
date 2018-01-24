@@ -1,11 +1,36 @@
 
 module Attachments
+  class FakeMultipartUpload
+    def initialize(name, container, options, &block)
+      super()
+
+      @name = name
+      @container = container
+
+      @data = ""
+
+      block.call(self)
+    end
+
+    def upload_part(data)
+      @data << data
+    end
+
+    def data
+      @data
+    end
+  end
+
   class FakeDriver
     class ItemNotFound < StandardError; end
 
     def store(name, data_or_io, container, options = {})
       objects(container)[name] = data_or_io.respond_to?(:read) ? data_or_io.read : data_or_io
     end 
+
+    def store_multipart(name, container, options = {})
+      objects(container)[name] = FakeMultipartUpload.new(name, bucket, options, &block).data
+    end
 
     def exists?(name, container)
       objects(container).key?(name)
