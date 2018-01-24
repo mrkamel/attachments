@@ -28,7 +28,7 @@ module Attachments
       objects(container)[name] = data_or_io.respond_to?(:read) ? data_or_io.read : data_or_io
     end 
 
-    def store_multipart(name, container, options = {})
+    def store_multipart(name, container, options = {}, &block)
       objects(container)[name] = FakeMultipartUpload.new(name, container, options, &block).data
     end
 
