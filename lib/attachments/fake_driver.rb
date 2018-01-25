@@ -1,6 +1,8 @@
 
 module Attachments
   class FakeMultipartUpload
+    include MonitorMixin
+
     def initialize(name, container, options, &block)
       super()
 
@@ -11,12 +13,18 @@ module Attachments
     end
 
     def upload_part(data)
-      @data ||= ""
-      @data << data
+      synchronize do
+        @data ||= ""
+        @data << data
+      end
+
+      true
     end
 
     def data
-      @data
+      synchronize do
+        @data
+      end
     end
   end
 
