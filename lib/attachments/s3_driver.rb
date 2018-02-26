@@ -17,15 +17,17 @@ module Attachments
 
       @upload_id = @s3_client.create_multipart_upload(options.merge(bucket: bucket, key: name)).to_h[:upload_id]
 
-      begin
-        block.call(self)
-      rescue => e
-        @s3_client.abort_multipart_upload(bucket: @bucket, key: @name, upload_id: @upload_id)
+      if block_given?
+        begin
+          block.call(self)
+        rescue => e
+          abort_upload
 
-        raise e
+          raise e
+        end
+
+        complete_upload
       end
-
-      @s3_client.complete_multipart_upload(bucket: @bucket, key: @name, upload_id: @upload_id, multipart_upload: { parts: @parts })
     end
 
     def upload_part(data)
@@ -38,6 +40,14 @@ module Attachments
       end
 
       @s3_client.upload_part(body: data, bucket: @bucket, key: @name, upload_id: @upload_id, part_number: index)
+    end
+
+    def abort_upload
+      @s3_client.abort_multipart_upload(bucket: @bucket, key: @name, upload_id: @upload_id)
+    end
+
+    def complete_upload
+      @s3_client.complete_multipart_upload(bucket: @bucket, key: @name, upload_id: @upload_id, multipart_upload: { parts: @parts })
     end
   end
 

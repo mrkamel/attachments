@@ -9,7 +9,7 @@ module Attachments
       @name = name
       @container = container
 
-      block.call(self)
+      block.call(self) if block_given?
     end
 
     def upload_part(data)
@@ -26,6 +26,9 @@ module Attachments
         @data
       end
     end
+
+    def abort_upload; end
+    def complete_upload; end
   end
 
   class FakeDriver
