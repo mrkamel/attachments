@@ -7,5 +7,5 @@ addons:
     - bucket.localhost
 install:
   - travis_retry bundle install
-  - fakes3 -r /tmp/fakes3_root -p 4567 & &> /dev/null
+  - fakes3 -r /tmp/fakes3_root -p 4567 -q &
 script: rspec
