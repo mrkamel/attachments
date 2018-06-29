@@ -1,5 +1,5 @@
 
-require "aws-sdk"
+require "aws-sdk-s3"
 require "mime-types"
 
 module Attachments
@@ -56,7 +56,7 @@ module Attachments
 
     def initialize(s3_client)
       self.s3_client = s3_client
-      self.s3_resource = Aws::S3::Resource.new(:client => s3_client)
+      self.s3_resource = Aws::S3::Resource.new(client: s3_client)
     end
 
     def store(name, data_or_io, bucket, options = {})

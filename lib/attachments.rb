@@ -1,7 +1,6 @@
 
 require "attachments/version"
 require "attachments/interpolation"
-require "attachments/file_driver"
 require "active_support/all"
 
 module Attachments

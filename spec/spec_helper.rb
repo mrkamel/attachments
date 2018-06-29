@@ -1,6 +1,10 @@
 
 require File.expand_path("../../lib/attachments", __FILE__)
 
+require "attachments/file_driver"
+require "attachments/fake_driver"
+require "attachments/s3_driver"
+
 class Product
   include Attachments
 
@@ -22,3 +26,8 @@ class Product
   end
 end
 
+RSpec::Matchers.define :be_url do |expected|
+  match do |actual|
+    URI.parse(actual) rescue false
+  end
+end

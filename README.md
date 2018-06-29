@@ -69,16 +69,18 @@ user.avatar(:icon).temp_url(expires_in: 2.days) # Must be supported by the drive
 
 ## Drivers
 
-The `attachments` gem ships with drivers for
+The `attachments` gem ships with the following drivers:
 
-* File system
-* In Memory
-* S3
-* Openstack Swift
+* `Attachments::FileDriver`: To store files on the local file system
+* `Attachments::FakeDriver`: To store files in memory (for testing)
+* `Attachments::S3Driver`: To store files on S3
+* `Attachments::SwiftDriver`: To store files on an Openstack Swift provider
 
 You can eg use the file system driver:
 
 ```ruby
+require "attachments/file_driver"
+
 Attachments.default_options[:driver] = Attachment::FileDriver.new("/path/to/attachments")
 
 class User
@@ -87,6 +89,7 @@ class User
   attachment :avatar, host: "www.example.com", versions: {
     # ...
   }
+end
 ```
 
 ## Contributing

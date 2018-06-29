@@ -42,5 +42,19 @@ RSpec.describe Attachments::Attachment::Version do
       product.image(:thumbnail).delete
     end
   end
+
+  it "should delete a blob" do
+    product = Product.new(id: 1)
+
+    begin
+      product.image(:thumbnail).store("blob")
+      expect(product.image(:thumbnail).exists?).to be(true)
+
+      product.image(:thumbnail).delete
+      expect(product.image(:thumbnail).exists?).to be(false)
+    ensure
+      product.image(:thumbnail).delete
+    end
+  end
 end
 

@@ -90,7 +90,7 @@ module Attachments
 
           dir = File.dirname(dir)
         end
-      rescue Errno::ENOTEMPTY
+      rescue Errno::ENOTEMPTY, Errno::ENOENT
         # nothing
       end
 

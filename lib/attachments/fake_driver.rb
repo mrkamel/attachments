@@ -3,11 +3,11 @@ module Attachments
   class FakeMultipartUpload
     include MonitorMixin
 
-    def initialize(name, container, options, &block)
+    def initialize(name, bucket, options, &block)
       super()
 
       @name = name
-      @container = container
+      @bucket = bucket
 
       block.call(self) if block_given?
     end
@@ -34,30 +34,30 @@ module Attachments
   class FakeDriver
     class ItemNotFound < StandardError; end
 
-    def store(name, data_or_io, container, options = {})
-      objects(container)[name] = data_or_io.respond_to?(:read) ? data_or_io.read : data_or_io
+    def store(name, data_or_io, bucket, options = {})
+      objects(bucket)[name] = data_or_io.respond_to?(:read) ? data_or_io.read : data_or_io
     end 
 
-    def store_multipart(name, container, options = {}, &block)
-      objects(container)[name] = FakeMultipartUpload.new(name, container, options, &block).data
+    def store_multipart(name, bucket, options = {}, &block)
+      objects(bucket)[name] = FakeMultipartUpload.new(name, bucket, options, &block).data
     end
 
-    def exists?(name, container)
-      objects(container).key?(name)
+    def exists?(name, bucket)
+      objects(bucket).key?(name)
     end 
 
-    def delete(name, container)
-      objects(container).delete(name)
+    def delete(name, bucket)
+      objects(bucket).delete(name)
     end 
 
-    def value(name, container)
-      raise(ItemNotFound) unless objects(container).key?(name)
+    def value(name, bucket)
+      raise(ItemNotFound) unless objects(bucket).key?(name)
 
-      objects(container)[name]
+      objects(bucket)[name]
     end 
 
-    def temp_url(name, container, options = {})
-      "https://example.com/#{container}/#{name}?signature=signature&expires=expires"
+    def temp_url(name, bucket, options = {})
+      "https://example.com/#{bucket}/#{name}?signature=signature&expires=expires"
     end
 
     def flush
@@ -66,9 +66,9 @@ module Attachments
 
     private
 
-    def objects(container)
+    def objects(bucket)
       @objects ||= {}
-      @objects[container] ||= {}
+      @objects[bucket] ||= {}
     end 
   end 
 end
