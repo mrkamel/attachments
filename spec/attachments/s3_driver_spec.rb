@@ -6,8 +6,8 @@ RSpec.describe Attachments::S3Driver do
     Attachments::S3Driver.new(Aws::S3::Client.new(
       access_key_id: "access_key_id",
       secret_access_key: "secret_access_key",
-      endpoint: "http://127.0.0.1:4567",
-      region: "eu-central-1"
+      endpoint: "http://localhost:4567",
+      region: "us-east-1"
     ))
   end
 
