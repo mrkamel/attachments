@@ -1,5 +1,7 @@
 # Attachments
 
+[![Build Status](https://secure.travis-ci.org/mrkamel/attachments.png?branch=master)](http://travis-ci.org/mrkamel/attachments)
+
 Declarative and flexible attachments.
 
 ## Installation
