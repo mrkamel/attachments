@@ -2,8 +2,6 @@ sudo: false
 language: ruby
 rvm:
   - 2.3.3
-before_install:
-  - sleep 10
 install:
   - travis_retry bundle install
 script: rspec
