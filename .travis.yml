@@ -4,4 +4,5 @@ rvm:
   - 2.3.3
 install:
   - travis_retry bundle install
+  - fakes3 -r /tmp/fakes3_root -p 4567 &
 script: rspec
