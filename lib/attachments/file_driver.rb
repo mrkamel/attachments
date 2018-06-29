@@ -3,6 +3,48 @@ require "fileutils"
 
 module Attachments
   class FileDriver
+    class FileMultipartUpload
+      include MonitorMixin
+
+      def initialize(name, bucket, driver, &block)
+        super()
+
+        @name = name
+        @bucket = bucket
+        @driver = driver
+
+        @stream = open(driver.path_for(name, bucket), "wb")
+
+        if block_given?
+          begin
+            block.call(self)
+          rescue => e
+            abort_upload
+
+            raise e
+          end
+
+          complete_upload
+        end
+      end
+
+      def upload_part(data)
+        synchronize do
+          @stream.write(data)
+        end
+      end
+
+      def abort_upload
+        @stream.close
+
+        @target.delete(name, bucket)
+      end
+
+      def complete_upload
+        @stream.close
+      end
+    end
+
     def initialize(base_path)
       @base_path = base_path
     end
@@ -21,6 +63,14 @@ module Attachments
       end
 
       true
+    end
+
+    def store_multipart(name, bucket, options = {}, &block)
+      path = path_for(name, bucket)
+
+      FileUtils.mkdir_p File.dirname(path)
+
+      FileMultipartUpload.new(name, bucket, self, &block)
     end
 
     def value(name, bucket)
@@ -52,8 +102,6 @@ module Attachments
     end
 
     def temp_url(name, bucket, options = {}); end
-
-    private
 
     def path_for(name, bucket)
       File.join(@base_path, bucket, name)

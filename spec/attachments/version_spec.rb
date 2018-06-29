@@ -15,12 +15,29 @@ RSpec.describe Attachments::Attachment::Version do
   end
 
   it "should store a blob" do
+    product = Product.new(id: 1)
+
     begin
-      product = Product.new(id: 1)
       product.image(:thumbnail).store("blob")
 
       expect(product.image(:thumbnail).exists?).to be(true)
       expect(product.image(:thumbnail).value).to eq("blob")
+    ensure
+      product.image(:thumbnail).delete
+    end
+  end
+
+  it "should support multipart uploads" do
+    product = Product.new(id: 1)
+
+    begin
+      product.image(:thumbnail).store_multipart do |upload|
+        upload.upload_part("chunk1")
+        upload.upload_part("chunk2")
+      end
+
+      expect(product.image(:thumbnail).exists?).to be(true)
+      expect(product.image(:thumbnail).value).to eq("chunk1chunk2")
     ensure
       product.image(:thumbnail).delete
     end
