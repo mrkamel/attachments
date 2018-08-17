@@ -10,6 +10,18 @@ module Attachments
       self.swift_client_pool = swift_client_pool
     end
 
+    def list(container, prefix: nil)
+      return enum_for(:list, container, prefix: prefix) unless block_given?
+
+      swift_client_pool.with do |swift_client|
+        swift_client.paginate_objects(container, prefix: prefix) do |response|
+          response.parsed_response.each do |source_object|
+            yield source_object["name"]
+          end
+        end
+      end
+    end
+
     def store(name, data_or_io, container, headers = {})
       swift_client_pool.with do |swift_client|
         swift_client.put_object name, data_or_io, container, headers

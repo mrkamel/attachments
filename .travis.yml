@@ -2,10 +2,9 @@ sudo: false
 language: ruby
 rvm:
   - 2.3.3
-addons:
-  hosts:
-    - bucket.localhost
+before_install:
+  - docker-compose up -d
+  - sleep 10
 install:
   - travis_retry bundle install
-  - fakes3 -r /tmp/fakes3_root -p 4567 -q &
 script: rspec

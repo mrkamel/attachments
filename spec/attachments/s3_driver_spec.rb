@@ -6,9 +6,25 @@ RSpec.describe Attachments::S3Driver do
     Attachments::S3Driver.new(Aws::S3::Client.new(
       access_key_id: "access_key_id",
       secret_access_key: "secret_access_key",
-      endpoint: "http://localhost:4567",
+      endpoint: "http://localhost:4569",
       region: "us-east-1"
     ))
+  end
+
+  it "should list objects" do
+    begin
+      driver.store("object1", "blob", "bucket1")
+      driver.store("object2", "blob", "bucket1")
+      driver.store("other", "blob", "bucket1")
+      driver.store("object", "blob", "bucket2")
+
+      expect(driver.list("bucket1", prefix: "object").to_a).to eq(["object1", "object2"])
+    ensure
+      driver.delete("bucket1", "object1")
+      driver.delete("bucket1", "object2")
+      driver.delete("bucket1", "other")
+      driver.delete("bucket2", "object")
+    end
   end
 
   it "should store a blob" do

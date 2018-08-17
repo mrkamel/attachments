@@ -34,6 +34,14 @@ module Attachments
   class FakeDriver
     class ItemNotFound < StandardError; end
 
+    def list(bucket, prefix: nil)
+      return enum_for(:list, bucket, prefix: prefix) unless block_given?
+
+      objects(bucket).each do |key, _|
+        yield key if prefix.nil? || key.start_with?(prefix)
+      end
+    end
+
     def store(name, data_or_io, bucket, options = {})
       objects(bucket)[name] = data_or_io.respond_to?(:read) ? data_or_io.read : data_or_io
     end 

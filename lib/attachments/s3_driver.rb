@@ -59,6 +59,17 @@ module Attachments
       self.s3_resource = Aws::S3::Resource.new(client: s3_client)
     end
 
+    def list(bucket, prefix: nil)
+      return enum_for(:list, bucket, prefix: prefix) unless block_given?
+
+      options = {}
+      options[:prefix] = prefix if prefix
+
+      s3_resource.bucket(bucket).objects(options).each do |object|
+        yield object.key
+      end
+    end
+
     def store(name, data_or_io, bucket, options = {})
       opts = options.dup
 

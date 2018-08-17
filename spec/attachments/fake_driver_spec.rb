@@ -4,6 +4,19 @@ require File.expand_path("../../spec_helper", __FILE__)
 RSpec.describe Attachments::FakeDriver do
   let(:driver) { Attachments::FakeDriver.new }
 
+  it "should list objects" do
+    begin
+      driver.store("object1", "blob", "bucket1")
+      driver.store("object2", "blob", "bucket1")
+      driver.store("other", "blob", "bucket1")
+      driver.store("object", "blob", "bucket3")
+
+      expect(driver.list("bucket1", prefix: "object").to_a).to eq(["object1", "object2"])
+    ensure
+      driver.flush
+    end
+  end
+
   it "should store a blob" do
     begin
       driver.store("name", "blob", "bucket")
@@ -11,7 +24,7 @@ RSpec.describe Attachments::FakeDriver do
       expect(driver.exists?("name", "bucket")).to be(true)
       expect(driver.value("name", "bucket")).to eq("blob")
     ensure
-      driver.delete("name", "bucket")
+      driver.flush
     end
   end
 
@@ -25,7 +38,7 @@ RSpec.describe Attachments::FakeDriver do
       expect(driver.exists?("name", "bucket")).to be(true)
       expect(driver.value("name", "bucket")).to eq("chunk1chunk2")
     ensure
-      driver.delete("name", "bucket")
+      driver.flush
     end
   end
 
@@ -37,7 +50,7 @@ RSpec.describe Attachments::FakeDriver do
       driver.delete("name", "bucket")
       expect(driver.exists?("name", "bucket")).to be(false)
     ensure
-      driver.delete("name", "bucket")
+      driver.flush
     end
   end
 
