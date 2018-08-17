@@ -20,10 +20,10 @@ RSpec.describe Attachments::S3Driver do
 
       expect(driver.list("bucket1", prefix: "object").to_a).to eq(["object1", "object2"])
     ensure
-      driver.delete("bucket1", "object1")
-      driver.delete("bucket1", "object2")
-      driver.delete("bucket1", "other")
-      driver.delete("bucket2", "object")
+      driver.delete("object1", "bucket1")
+      driver.delete("object2", "bucket1")
+      driver.delete("other", "bucket1")
+      driver.delete("object", "bucket2")
     end
   end
 
