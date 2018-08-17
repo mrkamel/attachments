@@ -13,17 +13,15 @@ RSpec.describe Attachments::S3Driver do
 
   it "should list objects" do
     begin
-      driver.store("object1", "blob", "bucket1")
-      driver.store("object2", "blob", "bucket1")
-      driver.store("other", "blob", "bucket1")
-      driver.store("object", "blob", "bucket2")
+      driver.store("object1", "blob", "bucket")
+      driver.store("object2", "blob", "bucket")
+      driver.store("other", "blob", "bucket")
 
       expect(driver.list("bucket1", prefix: "object").to_a).to eq(["object1", "object2"])
     ensure
-      driver.delete("object1", "bucket1")
-      driver.delete("object2", "bucket1")
-      driver.delete("other", "bucket1")
-      driver.delete("object", "bucket2")
+      driver.delete("object1", "bucket")
+      driver.delete("object2", "bucket")
+      driver.delete("other", "bucket")
     end
   end
 
