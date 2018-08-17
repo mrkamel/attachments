@@ -17,7 +17,7 @@ RSpec.describe Attachments::S3Driver do
       driver.store("object2", "blob", "bucket")
       driver.store("other", "blob", "bucket")
 
-      expect(driver.list("bucket1", prefix: "object").to_a).to eq(["object1", "object2"])
+      expect(driver.list("bucket", prefix: "object").to_a).to eq(["object1", "object2"])
     ensure
       driver.delete("object1", "bucket")
       driver.delete("object2", "bucket")
