@@ -160,7 +160,7 @@ module Attachments
       end
 
       define_method "#{name}=" do |value|
-        self.updated_at = Time.zone.now if respond_to?(:updated_at=)
+        self.updated_at = Time.now if respond_to?(:updated_at=) && !value.nil?
 
         instance_variable_set "@#{name}", value
       end
