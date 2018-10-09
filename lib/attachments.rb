@@ -95,7 +95,7 @@ module Attachments
       def interpolate(str)
         raise(InterpolationError) unless str.is_a?(String)
 
-        str.gsub(/(?<!\\):[a-zA-Z0-9_]+/) do |attribute_name|
+        str.gsub(/(?<!\\):[a-zA-Z][a-zA-Z0-9_]*/) do |attribute_name|
           Interpolation.new(self).send(attribute_name.gsub(/^:/, ""))
         end
       end
