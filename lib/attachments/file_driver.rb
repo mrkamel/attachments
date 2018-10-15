@@ -101,8 +101,6 @@ module Attachments
       File.exists? path_for(name, bucket)
     end
 
-    def temp_url(name, bucket, options = {}); end
-
     def path_for(name, bucket)
       File.join(@base_path, bucket, name)
     end

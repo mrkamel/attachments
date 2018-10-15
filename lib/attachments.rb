@@ -41,6 +41,8 @@ module Attachments
       alias_method :bucket, :container
 
       def temp_url(opts = {})
+        return url unless option(:driver).respond_to?(:temp_url)
+
         option(:driver).temp_url(path, container, opts)
       end
 
